@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest
 from .models import *
 from django.http import HttpResponse
-from .filters import PriceFilter
+
 
 from django.db.models import Max, Min
 # Create your views here.
@@ -29,9 +29,9 @@ def store(request):
     hotel = None
     locations = Location.get_all_locations()
     locationID = request.GET.get('location')
-    filter = Hotel.objects.all()
+  
     
-    pricefilter = PriceFilter(request.GET, queryset=filter)
+   
     
     
     if locationID:
