@@ -1,83 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-{% load ratings %}
-
-
-{% comment %} {% for location in locations %}
-<label>	{{location.name}}</label> {% endcomment %}
-
-<section class="section bg-light"  id="next">
-<div class = "row">
-  <div class="product-widget mb-30">
-    <h5 class="pt-title text-dark">Filter By Price</h5>
-    <div class="price__slider mt-30">
-      <div class="mt-30" >
-       <input type="range" class="multi-range  success " style="color:red;" value="{{FilterPrice}}" min="{{min_price.price__min}}" max="{{max_price.price__max}}" id="rangeInput" oninput="maxPrice.value=this.value" width="400px;"/>
-       
-          <form action="" class="s-form mt-20" method="get" style="margin-top:20px;">
-             <b class="text-dark">₹</b><input type="number" id="maxPrice" readonly="" name="FilterPrice" onkeyup="rangeInput.value=this.value" value={{FilterPrice}}{{minMaxPrice.price__min}}>
-             <button type="submit" id="priceFilterBtn" class="tp-btn-square-lg">Filter</button>
-          </form>
-        
-       </div>
-    </div>
-    </div>
-  </div>
-  
-
-<div class = "row">
-  
- 
-  
-     
-   
-   
-  
-  {%for ho in hotel%}
- 
-  
-    <div class = "col-lg-4">
-      <div class="container">
-      <img class ="thumbnail" src={% static  'images/banglore.jpg' %} alt="Snow" style="width:100%;">
-      <div class="centered">{{ho.location.name}}</div>
-      </div>
-      
-     
-      <div class="card mx-auto mb-3" id={{hotel.id}} style="width: 18rem;">
-        <img  class="thumbnail" src="{{MEDIA_URL}}{{ho.hotel_image.url}}"alt="hotel image">
-        <div class = "box-element product">
-       
-
-        <h6 class="card text-dark">{{ho.hotel_name}}</h6>
-        <button class="btn btn-warning"><b>{{ho.price}}</b></button>
-        <button class="btn btn-success">{{ho.Availability}}</button>
-        <button class = "btn btn-primary">{{ho.location.name}}</button>
-        {{ho.location.name}}
-        <p class="card text-dark"><b>{{ho.hotel_description}}</b></p> 
-       
-          </div> 
-          
-    </div>
-  
-    
-</div>
-
-{% endfor %}
-
-
-
-</section>
-
-
-{% comment %} Availabilty check {% endcomment %}
 
 <section class="section bg-light"  id="next">
   <div class="container">
     <div class="row">
+    
       <div class="col-md-7 mx-auto text-center mb-5">
         <h2 class="heading">Check Availabilty</h2>
       </div>
+      
     </div>
     <div class="row">
       <div class="block-32">
@@ -129,10 +61,12 @@
             </div>
            
             <div class="col-md-6 col-lg-3 align-self-end">
+              
               <button class="btn btn-success btn-block text-white">
                 
 
                 Check Availabilty</button>
+                
             </div>
           </div>
         </form>
@@ -142,6 +76,16 @@
     </div>
   </div>
 </section>
+<section>
+  <h1>No more</h1>
+  {% for hom in room %}  
+  <p>test</p>
+  <h6 class="text-dark">Hotel Name:{{hom.hotel_hotel_name}}</h6> 
+<h1>{{hom.hotel_hotel_name}}</h1>
+{%endfor%}
+</section>
+
+
 
 {% endblock %}
 

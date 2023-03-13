@@ -1,26 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 
-<h1>Rating Stars with no JS</h1>
-  
-<h2>float:right; and general siblings selector + input/label</h2>
+<div>    
+<h1>{{reservation_list}}</h1>
+</div>
+
+
+{% endblock %}
+
 	
-	<div class="rating">
-  <input name="stars" id="e5" type="radio"></a><label for="e5">☆</label
-		<input name="stars" id="e4" type="radio"></a><label for="e4">☆</label
-		<input name="stars" id="e3" type="radio"></a><label for="e3">☆</label>
-		<input name="stars" id="e2" type="radio"></a><label for="e2">☆</label>
-		<input name="stars" id="e1" type="radio"></a><label for="e1">☆</label>
-	</div>
-
-	<h2>direction:rtl and general siblings selector + &lt;a&gt; element</h2>
-	
-	<div class="rating rating2">
-		<a href="#5" title="Give 5 stars">★</a>
-		<a href="#4" title="Give 4 stars">★</a>
-		<a href="#3" title="Give 3 stars">★</a>
-		<a href="#2" title="Give 2 stars">★</a>
-		<a href="#1" title="Give 1 star">★</a>
-	</div>
-
-	<p>by <a href="http://creativejuiz.fr/">Geoffrey Crofte</a> (<a href="https://twitter.com/geoffreycrofte">@geoffreycrofte</a>)<br />
-	<a href="https://twitter.com/intent/tweet?hashtags=CSS,Rating,Tutorial&amp;original_referer=http%3A%2F%2Fwww.creativejuiz.fr%2Ftrytotry%2Frating-stars-with-no-js.html&amp;related=geoffreycrofte&amp;text=Full%20CSS%20Rating%20system%20with%20no%20JS&amp;url=http%3A%2F%2Fwww.creativejuiz.fr%2Ftrytotry%2Frating-stars-with-no-js.html&amp;via=geoffreycrofte" title="Tweet in new window" target="_blank">Tweet</a><br />
-    <a href="http://www.creativejuiz.fr/blog/tutoriels/systeme-notation-quelques-lignes-css" hreflang="fr">Back to the blog article (French)</a></p>

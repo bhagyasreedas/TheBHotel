@@ -1,4 +1,5 @@
 {% load static %}
+
 <html>
     <head>
         <meta charset="utf-8">
@@ -26,7 +27,7 @@
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                       <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'store'%}">Hotels</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'room'%}">Hotel Rooms</a>
                       </li>
     
                       <li class="nav-item dropdown">
@@ -46,12 +47,50 @@
                     </ul>
                     </div>
                     <div class="form-inline my-2 my-lg-0">
+                    {% if request.session.customer %}
+        
+                    
+                      <a class="btn btn-warning" href="/orders">My BOOKING<span class="sr-only">(current)</span></a>
+                    
+                    </div>       
+                    <div class="form-inline my-2 my-lg-0">
+                    <a class="btn btn-warning" href="/logout">Logout<span class="sr-only">(current)</span></a>
+                    
+                    {% else %}
+                  </div>
+                    
+                    
+                    <div class="form-inline my-2 my-lg-0">
     
                             <a class="btn btn-warning" aria-current="page" href="{% url 'signup' %}">Signup</a>
                         </div>       
                     <div class="form-inline my-2 my-lg-0">
                             <a class="btn btn-warning" aria-current="page" href="{% url 'login' %}">Login</a>
-                    </div>       
+                    </div>  
+                    <a href="staff/login" class="nav-link">
+                      <button class="btn btn-group bg-warning font-weight-bold">
+                          Staff Login
+                      </button></a>
+            
+                    
+                    {% comment %} {% if customer.is_authenticated %}
+                      <button class="btn btn-group bg-light" data-toggle="modal" data-target="#forlogin">
+                       Hello, {{request.customer}}
+                       <a href="/logout" class="nav-link">
+                    <button class="btn btn-group bg-warning" data-toggle="modal" data-target="#forlogin">
+                        Logout
+                    </button></a>&nbsp; &nbsp;
+                    </button>
+                
+                {% else %} {% endcomment %}
+                   
+                    {% comment %} <a href="user" class="nav-link">
+                    <button class="btn btn-group bg-warning font-weight-bold" data-toggle="modal" data-target="#forlogin">
+                        User Login
+                    </button></a> {% endcomment %}
+                
+                {% endif %}
+
                         
                  
                   

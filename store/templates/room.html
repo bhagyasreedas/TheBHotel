@@ -1,0 +1,62 @@
+{%extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<section class="section bg-light"  id="next">
+    <div class = "row">
+      <div class="product-widget mb-30">
+        <h5 class="pt-title text-dark">Filter By Price</h5>
+        <div class="price__slider mt-30">
+          <div class="mt-30" >
+           <input type="range" class="multi-range  success " style="color:red;" value="{{FilterPrice}}" min="{{min_price.price__min}}" max="{{max_price.price__max}}" id="rangeInput" oninput="maxPrice.value=this.value" width="400px;"/>
+           
+              <form action="" class="s-form mt-20" method="get" style="margin-top:20px;">
+                 <b class="text-dark">₹</b><input type="number" id="maxPrice" readonly="" name="FilterPrice" onkeyup="rangeInput.value=this.value" value={{FilterPrice}}{{minMaxPrice.price__min}}>
+                 <button type="submit" id="priceFilterBtn" class="tp-btn-square-lg">Filter</button>
+              </form>
+            
+           </div>
+        </div>
+        </div>
+      </div>
+      
+    
+    <div class = "row">
+      {%for ho in room %}  
+        <div class = "col-lg-4">
+          <div class="container">
+          {% comment %} <img class ="thumbnail" src={% static  'images/banglore.jpg' %} alt="Snow" style="width:100%;"> {% endcomment %}
+          <div class="centered">{{ho.category.name}}</div>
+          </div>
+          <h6 class="text-dark">Hotel Name:{{ho.hotel.hotel_name}}</h6>
+         
+          <div class="card mx-auto mb-3" id={{hotel.id}} style="width: 18rem;">
+            <img  class="thumbnail" src="{{MEDIA_URL}}{{ho.hotel_image.url}}"alt="hotel image">
+            <div class = "box-element product">
+           
+            
+           
+            
+            
+            <button class="btn btn-warning"><b>{{ho.price}}</b></button>
+            
+            
+            
+            {% comment %} <button class="btn btn-success">{{ho.Availability}}</button> {% endcomment %}
+             <button class = "btn btn-primary">{{ho.hotel.location.name}}</button>
+            
+            <p class="card text-dark"><b>{{ho.hotel.hotel_description}}</b></p> 
+           
+              </div>   
+              
+        </div>
+      
+        
+    </div>
+    
+    {% endfor %}
+    
+    
+    
+    </section>
+{% endblock %}

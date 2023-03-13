@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'crispy_forms',
-    'star_ratings',
-    'store'
+    
+    'store',
+    'store.reservations_functions',
 ]
 
 MIDDLEWARE = [

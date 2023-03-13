@@ -3,8 +3,8 @@
     background-color: #4f868c!important;
 }
 .box-element {
-    box-shadow: hsl(0,0%,80%) 0 0 16px;
-    background-color: #fff;
+    box-shadow: hsl(0, 0%, 98%) 0 0 16px;
+    background-color: #ffffff;
     border-radius: 4px;
     padding: 10px;
 
@@ -64,10 +64,11 @@
       color: orange;
   } */
   body {
-    background: #FDFDFD;
+    
     font-family: "Segoe WP","Segoe UI", Helvetica, Arial, sans-serif;
     text-align:center;
   }
+  
   h1, h2 {
     color: #888;
     margin:0;
@@ -104,7 +105,7 @@
   /*  
    * Rating styles
    */
-  .rating {
+  /* .rating {
     width: 226px;
     margin: 0 auto 1em;
     font-size: 45px;
@@ -141,7 +142,7 @@ position: absolute;
   .rating2 a {
     float:none
   }
-
+ */
 
   input[type=range]{
   
