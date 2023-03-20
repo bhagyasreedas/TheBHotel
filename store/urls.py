@@ -17,6 +17,7 @@ urlpatterns=[
 #     path('staff/panel', panel,name="staffpanel"),
 #     path('staff/allbookings', all_bookings,name="allbookigs"),
     path('logout/',logout,name = 'logout'),
+    path('checkout/',checkout,name = 'checkout'),
     
     
 ]

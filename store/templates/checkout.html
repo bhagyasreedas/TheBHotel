@@ -1,5 +1,88 @@
 
-{% extends 'base.html'%}
-{% load static %}
+{% load static%}
 
-Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ipsa laboriosam nesciunt, nemo animi aspernatur iusto minus consequuntur corporis enim vero illo sit velit aperiam modi incidunt dolores illum, quae voluptates.
+
+<html>
+<head>
+	<title>Slide Navbar</title>
+	
+    <link rel="stylesheet" type = "text/css" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+	<div class="main">  	
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="signup">
+				<form action="/signup" method="POST">
+                    
+                    {% csrf_token %}
+    
+                    {% if error%}
+                    <div class="alert alert-danger" role="alert">
+                        {{error}}
+                    </div>
+                    {% endif %}
+					<label for="chk" aria-hidden="true">Sign up</label>
+   
+                        <input type="text" name="firstname"
+                         id="" value="{{values.first_name}}" class="form-control form-control-sm" 
+                         >
+
+                        <input type="text" name="lastname" 
+                        id="" value="{{values.last_name}}" class="form-control form-control-sm" >
+       
+                        <input type="text" name="phone" 
+                        id="" class="form-control form-control-sm"
+                        value="{{values.phone}}"
+                        placeholder="565698959">
+                    
+                    
+                        
+                        <input required type="email" name="email" id=""
+                        value="{{values.email}}" 
+                        class=" form-control-sm form-control" placeholder="example@gmail.com">
+       
+                        
+                        <input type="password" 
+                        name="password" 
+                        id=""
+                         class="form-control form-control-sm" placeholder="********">
+						 <button type="submit" >Sign up</button>
+                   
+    \
+                        {% comment %} <input class="btn btn-sm btn-info" type="submit" value="Create An Account "> {% endcomment %}
+                    
+                </div>
+                <div>
+                </form>         
+				
+				{% comment %} <form action="/signup" method="POST">
+                    {% csrf_token %}
+    
+                    {% if error%}
+                    <div class="alert alert-danger" role="alert">
+                        {{error}}
+                    </div>
+                    {% endif %}
+					<label for="chk" aria-hidden="true">Sign up</label>
+					<input type="text" name="firstname" value="{{values.first_name}}" placeholder="First name">
+                    <input type="text" name="lastname" value="{{values.last_name}}" placeholder="Last name" >
+					<input type="email" name="email" value="{{values.email}}"  placeholder="Email" >
+                    <input type="phone" name="phone" value="{{values.phone}}"  placeholder="Phone" >
+					<input type="password" name="pswd" placeholder="Password">
+					<button>Sign up</button>
+				</form> {% endcomment %}
+			</div>
+
+			<div class="login">
+				<form>
+					<label for="chk" aria-hidden="true">Login</label>
+					<input type="email" name="email" placeholder="Email" required="">
+					<input type="password" name="pswd" placeholder="Password" required="">
+					<button>Login</button>
+				</form>
+			</div>
+	</div>
+</body>
+</html>

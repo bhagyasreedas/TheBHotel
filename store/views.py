@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect
 from .models import *
-from django.views.generic import FormView
+from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from .forms import AvailabilityForm
@@ -83,6 +83,8 @@ class Login(View):
 def logout(request):
     request.session.clear()
     return redirect('login')
+def checkout(request):
+    return render(request, 'checkout.html')
 
 
 #user signup
@@ -160,7 +162,7 @@ class Signup(View):
 
 
 def home(request):
-    return render(request, 'store.html')
+    return render(request, 'base1.html')
 
 def store(request):
     room = None
@@ -222,18 +224,16 @@ from django.core.exceptions import ValidationError
 
 class ReservationView(FormView):
     form_p = AvailabilityForm
-    template_name = "availability_form.html"
-   
+    template_name = "availability_form.html" 
     
     def form_valid(self,forms):
         data = forms.cleaned_data 
-        print(f"check_in: {data['check_in']}")
-        print(f"check_out: {data['check_out']}")
         room_list = Room.objects.filter(category=data['room_category'])
         available_room = []
         for room in room_list:
             if check_availability(room, data['check_in'], data['check_out']):
                 available_room.append(room)
+               
                 
         if len(available_room)>0:
             

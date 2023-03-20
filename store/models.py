@@ -107,7 +107,7 @@ class Room(models.Model):
     
     
 class Reservation(models.Model):
-    user = models.ForeignKey(User, on_delete= models.CASCADE)
+    user = models.ForeignKey(Customer, on_delete= models.CASCADE)
     room = models.ForeignKey(Room, on_delete = models.CASCADE,default = 1)
     check_in = models.DateTimeField(auto_now =False)
     check_out = models.DateTimeField(auto_now=False)
