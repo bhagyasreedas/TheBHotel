@@ -162,7 +162,7 @@ class Signup(View):
 
 
 def home(request):
-    return render(request, 'base1.html')
+    return render(request, 'store.html')
 
 def store(request):
     room = None
