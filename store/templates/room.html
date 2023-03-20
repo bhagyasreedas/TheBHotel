@@ -34,14 +34,17 @@
           {% comment %} <img class ="thumbnail" src={% static  'images/banglore.jpg' %} alt="Snow" style="width:100%;"> {% endcomment %}
           <div class="centered text-light">{{ho.category.name}}</div>
           </div>
-          <h6 >Hotel Name:{{ho.hotel.hotel_name}}</h6>
+          <p >Hotel Name:{{ho.hotel.hotel_name}}</p>
          
           <div class="card mx-auto mb-3" id={{hotel.id}} style="width: 18rem;">
             <img  class="banner-image1" src="{{MEDIA_URL}}{{ho.hotel_image.url}}"alt="hotel image">
-            <div class = "box-element product">           
-              <button class="btn fill1"><b>{{ho.price}}</b></button>
+            <div class = "box-element product">
+              <div class="button-wrapper1" >          
+              <button class="tp-btn-square-lg"><b>{{ho.price}}</b></button>
               {% comment %} <button class="btn btn-success">{{ho.Availability}}</button> {% endcomment %}
-             <button class = "btn btn-primary">{{ho.hotel.location.name}}</button>
+             <button class = "btn ">{{ho.hotel.location.name}}</button>
+             <button class="btn fill1">BUY NOW</button>
+              </div>
               <p class="card text-dark"><b>{{ho.hotel.hotel_description}}</b></p> 
             </div>   
               

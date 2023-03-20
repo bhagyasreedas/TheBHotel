@@ -6,7 +6,8 @@ body{
 	align-items: center;
 	min-height: 100vh;
 	font-family: 'Jost', sans-serif;
-	background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+	background: linear-gradient(135deg,#b25afa,#21a9af);
+	background-color:#184e8e;
 }
 .main{
 	width: 350px;

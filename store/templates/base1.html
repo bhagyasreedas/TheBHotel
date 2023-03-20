@@ -29,14 +29,14 @@
                         </form>
                        
                             {% if request.session.customer %}
-                
+                            <ul id="nav-mobile" class="right hide-on-med-and-down">
                             
                             <span class="navbar-text"><a class="login" href="/orders">My BOOKING</a></span>
                             
                                    
         
-                            <span class="navbar-text"><a class="login" href="/logout">Logout</a></span>
-                            
+                            <span class="navbar-text"><a class="btn btn-light action-button" href="/logout">Logout</a></span>
+                            </ul>
                             {% else %}
                             <ul id="nav-mobile" class="right hide-on-med-and-down">
                               {% if not request.session.customer %}
