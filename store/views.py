@@ -13,6 +13,7 @@ from django.views import View
 from store.reservations_functions.availability import check_availability
 from django.contrib.auth.models import User
 from django.db.models import Max, Min
+import datetime
 # Create your views here.
 
 
@@ -119,7 +120,7 @@ class Signup(View):
             print(firstname, lastname, phone, email, password)
             customer.password = make_password(customer.password)
             customer.register()
-            return redirect('login')
+            return redirect('signup')
         else:
             data = {
                 'error': error_message,
@@ -162,7 +163,40 @@ class Signup(View):
 
 
 def home(request):
-    return render(request, 'store.html')
+    all_location = Hotel.objects.values_list('location','id').distinct().order_by()
+    if request.method =="POST":
+        try:
+            print(request.POST)
+            hotel = Hotel.objects.all().get(id=int(request.POST['search_location']))
+            rr = []
+            
+            #for finding the reserved rooms on this time period for excluding from the query set
+            for each_reservation in Reservation.objects.all():
+                if str(each_reservation.check_in) < str(request.POST['cin']) and str(each_reservation.check_out) < str(request.POST['cout']):
+                    pass
+                elif str(each_reservation.check_in) > str(request.POST['cin']) and str(each_reservation.check_out) > str(request.POST['cout']):
+                    pass
+                else:
+                    rr.append(each_reservation.room.id)
+                
+            room = Room.objects.all().filter(hotel=hotel,capacity__gte = int(request.POST['capacity'])).exclude(id__in=rr)
+            if len(room) == 0:
+                messages.warning(request,"Sorry No Rooms Are Available on this time period")
+            data = {'rooms':room,'all_location':all_location,'flag':True}
+            response = render(request,'index.html',data)
+        except Exception as e:
+            messages.error(request,e)
+            response = render(request,'index.html',{'all_location':all_location})
+
+
+    else:
+        
+        
+        data = {'all_location':all_location}
+        response = render(request,'index.html',data)
+    return HttpResponse(response)
+
+    
 
 def store(request):
     room = None
@@ -172,7 +206,7 @@ def store(request):
     if locationID:
         room = Hotel.get_all_location_by_locationid(locationID)
     else:
-        room = Hotel.get_all_hotel();
+        room = Hotel.get_all_hotel()
         
     min_price = Room.objects.all().aggregate(Min('price'))
     max_price = Room.objects.all().aggregate(Max('price'))
@@ -222,39 +256,87 @@ def reservation (request):
 
 from django.core.exceptions import ValidationError
 
-class ReservationView(FormView):
-    form_p = AvailabilityForm
-    template_name = "availability_form.html" 
+# class ReservationView(FormView):
+#     form_p = AvailabilityForm
+#     template_name = "availability_form.html" 
     
-    def form_valid(self,forms):
-        data = forms.cleaned_data 
-        room_list = Room.objects.filter(category=data['room_category'])
-        available_room = []
-        for room in room_list:
-            if check_availability(room, data['check_in'], data['check_out']):
-                available_room.append(room)
+#     def form_valid(self,forms):
+#         data = forms.cleaned_data 
+#         room_list = Room.objects.filter(category=data['room_category'])
+#         available_room = []
+#         for room in room_list:
+#             if check_availability(room, data['check_in'], data['check_out']):
+#                 available_room.append(room)
                
                 
-        if len(available_room)>0:
+#         if len(available_room)>0:
             
         
-            room = available_room[0]
+#             room = available_room[0]
             
-            reservation = Reservation.objects.create(
-                user = self.request.user,
-                room = room,
-                check_in = data['check_in'],
-                check_out =data['check_out']
-                )
-            reservation.save()
-            return HttpResponse(reservation)
-            #return super().form_valid(form)
-        else:
-            raise ValidationError("No available rooms.")
-def reservation_success(request):
-    return HttpResponse('Reservation successful!')       
+#             reservation = Reservation.objects.create(
+#                 user = self.request.user,
+#                 room = room,
+#                 check_in = data['check_in'],
+#                 check_out =data['check_out']
+#                 )
+#             reservation.save()
+#             return HttpResponse(reservation)
+#             #return super().form_valid(form)
+#         else:
+#             raise ValidationError("No available rooms.")
+# def reservation_success(request):
+#     return HttpResponse('Reservation successful!')       
                 
-                
+ #booking room page
+#@login_required(login_url='signup')
+def book_room_page(request):
+    room = Room.objects.all().get(id=int(request.GET['roomid']))
+    return HttpResponse(render(request,'bookroom.html',{'room':room}))
+
+#For booking the room
+@login_required(login_url='signup')
+def book_room(request):
+    
+    if request.method =="POST":
+
+        room_id = request.POST['room_id']
+        
+        room = Room.objects.all().get(id=room_id)
+        #for finding the reserved rooms on this time period for excluding from the query set
+        for each_reservation in Reservation.objects.all().filter(room = room):
+            if str(each_reservation.check_in) < str(request.POST['check_in']) and str(each_reservation.check_out) < str(request.POST['check_out']):
+                pass
+            elif str(each_reservation.check_in) > str(request.POST['check_in']) and str(each_reservation.check_out) > str(request.POST['check_out']):
+                pass
+            else:
+                messages.warning(request,"Sorry This Room is unavailable for Booking")
+                return redirect("store")
+            
+        current_user = request.user
+        total_person = int( request.POST['person'])
+        booking_id = str(room_id) + str(datetime.datetime.now())
+
+        reservation = Reservation()
+        room_object = Room.objects.all().get(id=room_id)
+        room_object.status = '2'
+        
+        user_object = Customer.objects.all().get(firstname=current_user).first()
+
+        reservation.user = user_object
+        reservation.room = room_object
+        person = total_person
+        reservation.check_in = request.POST['check_in']
+        reservation.check_out = request.POST['check_out']
+
+        reservation.save()
+
+        messages.success(request,"Congratulations! Booking Successfull")
+
+        return redirect("store")
+    else:
+        return HttpResponse('Access Denied')
+               
             
         
                 
