@@ -111,8 +111,13 @@
                     <h2 class="h6 font-weight-bold text-center mb-4">Total Rooms</h2>
 
                     <!-- Progress bar 1 -->
+                    {% if total_rooms != 0 %}
+                    <div class="progress mx-auto" data-value="{{ total_rooms|percentage:total_rooms }}">
+                        {% else %}
+                        <div class="progress mx-auto" data-value="0">
+                            {% endif %}
 
-                    <div class="progress mx-auto" data-value={{ total_rooms|percentage:total_rooms}}>
+
                         <span class="progress-left">
                                     <span class="progress-bar border-primary"></span>
                         </span>
@@ -134,7 +139,14 @@
                     <h2 class="h6 font-weight-bold text-center mb-4">Available Rooms</h2>
 
                     <!-- Progress bar 2 -->
-                    <div class="progress mx-auto" data-value={{ available|percentage:total_rooms}}>
+                    {% if total_rooms != 0 %}
+                    <div class="progress mx-auto" data-value="{{ available|percentage:total_rooms }}">
+                        {% else %}
+                        <div class="progress mx-auto" data-value="0">
+                            {% endif %}
+
+
+
                         <span class="progress-left">
                                     <span class="progress-bar border-success"></span>
                         </span>
@@ -156,7 +168,13 @@
                     <h2 class="h6 font-weight-bold text-center mb-4">Not Available</h2>
 
                     <!-- Progress bar 3 -->
-                    <div class="progress mx-auto" data-value={{ unavailable|percentage:total_rooms}}>
+                    {% if total_rooms != 0 %}
+                    <div class="progress mx-auto" data-value="{{ unavailable|percentage:total_rooms }}">
+                        {% else %}
+                        <div class="progress mx-auto" data-value="0">
+                            {% endif %}
+
+
                         <span class="progress-left">
                                     <span class="progress-bar border-danger"></span>
                         </span>
@@ -178,7 +196,13 @@
                     <h2 class="h6 font-weight-bold text-center mb-4">Total Reservation</h2>
 
                     <!-- Progress bar 4 -->
-                    <div class="progress mx-auto" data-value={{reserved |percentage:total_rooms}}>
+                    {% if total_rooms != 0 %}
+                    <div class="progress mx-auto" data-value="{{ reserved|percentage:total_rooms }}">
+                        {% else %}
+                        <div class="progress mx-auto" data-value="0">
+                            {% endif %}
+
+
                         <span class="progress-left">
                                     <span class="progress-bar border-warning"></span>
                         </span>

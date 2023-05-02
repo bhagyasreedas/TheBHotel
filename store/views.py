@@ -1,6 +1,6 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse , HttpResponseRedirect
-from .models import Hotels,Rooms,Reservation
+from .models import Hotels,Rooms,Reservation,Staff
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
@@ -166,40 +166,39 @@ def staff_log_sign_page(request):
 @login_required(login_url='/staff')
 def panel(request):
 
-#     # Only allow staff members to access the view
-#     if not request.user.is_staff:
-#         return HttpResponse('Access Denied')
-#
-#     # Filter rooms, reservations, and hotels by the logged-in user's staff ID
-#     staff_id = request.user.id
-#     rooms = Rooms.objects.filter(staff__id=staff_id).order_by()
-#     total_rooms = len(rooms)
-#     available_rooms = len(rooms.filter(status='1'))
-#     unavailable_rooms = len(rooms.filter(status='2'))
-#     reserved = len(Reservation.objects.filter(room__staff__id=staff_id))
-#
-#     hotel = Hotels.objects.filter(staff__id=staff_id).values_list('location', 'id').distinct().order_by()
-#
-#     return render(request, 'staff/panel.html', {'location': hotel, 'reserved': reserved, 'rooms': rooms, 'total_rooms': total_rooms, 'available': available_rooms, 'unavailable': unavailable_rooms})
-
-
-    if request.user.is_staff == False:
+    # Only allow staff members to access the view
+    if not request.user.is_staff:
         return HttpResponse('Access Denied')
+
+    # Filter rooms, reservations, and hotels by the logged-in user's staff ID
     staff_id = request.user.id
-    print("The staff number is:",staff_id)
+    hotels = Hotels.objects.filter(staff__id=staff_id)
+    reserved_rooms = Reservation.objects.filter(room__hotel__in=hotels).count()
+    available_rooms = Rooms.objects.filter(hotel__in=hotels, status='1').count()
+    total_rooms = Rooms.objects.filter(hotel__in=hotels).count()
+    print(total_rooms)
 
-    hotel = Hotels.objects.filter(id = staff_id)
-    print("the hotel name is :",hotel)
-    rooms = Rooms.objects.all()
-    total_rooms = len(rooms)
-    available_rooms = len(Rooms.objects.all().filter(status='1'))
-    unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
-    reserved = len(Reservation.objects.all())
+        # Render the panel template with the hotel data for the logged-in user
+    return render(request, 'staff/panel.html', {'hotels': hotels, 'reserved_rooms': reserved_rooms, 'available_rooms': available_rooms, 'total_rooms': total_rooms})
 
-    hotel = Hotels.objects.values_list('location','id').distinct().order_by()
 
-    response = render(request,'staff/panel.html',{'location':hotel,'reserved':reserved,'rooms':rooms,'total_rooms':total_rooms,'available':available_rooms,'unavailable':unavailable_rooms})
-    return HttpResponse(response)
+#     if request.user.is_staff == False:
+#         return HttpResponse('Access Denied')
+#     staff_id = request.user.id
+#     print("The staff number is:",staff_id)
+#
+#     hotel = Hotels.objects.filter(
+#     print("the hotel name is :",hotel)
+#     rooms = Rooms.objects.all()
+#     total_rooms = len(rooms)
+#     available_rooms = len(Rooms.objects.all().filter(status='1'))
+#     unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
+#     reserved = len(Reservation.objects.all())
+#
+#     hotel = Hotels.objects.values_list('location','id').distinct().order_by()
+#
+#     response = render(request,'staff/panel.html',{'location':hotel,'reserved':reserved,'rooms':rooms,'total_rooms':total_rooms,'available':available_rooms,'unavailable':unavailable_rooms})
+#     return HttpResponse(response)
 
 #for editing room information
 @login_required(login_url='/staff')
