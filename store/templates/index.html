@@ -1,13 +1,13 @@
     {% extends 'basic.html' %}
-    {% block title %}Hotel Krishna
+    {% block title %}Hotel TheBHotel
     {% endblock title %}
     {% block body %}
      <!--Booking Section starts here-->
-    <section>
+
         <div class="container-fluid py-5 px-5 ">
             <form action="" method="POST">
             {% csrf_token %}
-            <div class="row justify-content-center py-5 bg-light">
+            <div class="row justify-content-center py-5">
                 <div class="col-lg-4">
                     <label for="">Location</label>
                     <select class="form-control" name="search_location" id="roomstatus">
@@ -47,7 +47,6 @@
             </form>
 
         </div>
-    </section>
     <!--Booking Section ends here-->
     <!--Fetched reults appear here-->
     <div class="container-fluid px-0 mx-aut">
@@ -80,7 +79,7 @@
     <h3 class="text-center text-dark">Rooms Types</h3>
 
     <!--Room tables starts here-->
-    <div class="container-fluid px-0" style="border:1px solid red">
+    <div class="container-fluid px-0" >
 
         <table class="table table-striped">
             <thead>
@@ -94,7 +93,7 @@
                     <td class="text-center">
                         <!--Room details-->
                         <h1>Budget</h1>
-                        <p>Price:$55/day</p>
+                        <p>Price:5000/day</p>
 
                         <p>Size :30 ft</p>
                         <p>Capacity :Max person 3</p>
@@ -112,7 +111,7 @@
                     <td class="text-center">
                         <!--Room details-->
                         <h1>Premium</h1>
-                        <p>Price:$55/day</p>
+                        <p>Price:3000/day</p>
 
                         <p>Size :30 ft</p>
                         <p>Capacity :Max person 3</p>
@@ -131,7 +130,7 @@
                     <td class="text-center">
                         <!--Room details-->
                         <h1>Deluxe</h1>
-                        <p>Price:$55/day</p>
+                        <p>Price:4500/day</p>
 
                         <p>Size :30 ft</p>
                         <p>Capacity :Max person 3</p>

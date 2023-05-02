@@ -9,6 +9,7 @@ body{
 	background: linear-gradient(135deg,#b25afa,#21a9af);
 	background-color:#184e8e;
 }
+
 .main{
 	width: 350px;
 	height: 500px;
@@ -21,6 +22,7 @@ body{
 #chk{
 	display: none;
 }
+
 .signup{
 	position: relative;
 	width:100%;
