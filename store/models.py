@@ -3,20 +3,23 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class Staff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=50)
+# class Staff(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     role = models.CharField(max_length=50)
 
-    def __str__(self):
-        return self.user.username
+#     def __str__(self):
+#         return self.user.username
 
 class Hotels(models.Model):
     #h_id,h_name,owner ,location,rooms
-    name = models.CharField(max_length=30,default="BHagya")
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE,default=None)
+    name = models.CharField(max_length=30,default=None)
+    staff = models.ForeignKey(User, on_delete=models.CASCADE,default=None)
     location = models.CharField(max_length=50)
     state = models.CharField(max_length=50,default="Assam")
     country = models.CharField(max_length=50,default="india")
+    @staticmethod
+    def get_all_hotel():
+        return Hotels.objects.all()
     def __str__(self):
         return self.name
 
@@ -35,6 +38,7 @@ class Rooms(models.Model):
 
     #type,no_of_rooms,capacity,prices,Hotel
     room_type = models.CharField(max_length=50,choices = ROOM_TYPE)
+    img = models.ImageField(default=None)
     capacity = models.IntegerField()
     price = models.IntegerField()
     size = models.IntegerField()

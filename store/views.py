@@ -1,6 +1,6 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse , HttpResponseRedirect
-from .models import Hotels,Rooms,Reservation,Staff
+from .models import Hotels,Rooms,Reservation
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
@@ -87,6 +87,8 @@ def staff_sign_up(request):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
+        
+
         if password1 != password2:
             messages.success(request,"Password didn't Matched")
             return redirect('staffloginpage')
@@ -166,39 +168,48 @@ def staff_log_sign_page(request):
 @login_required(login_url='/staff')
 def panel(request):
 
-    # Only allow staff members to access the view
-    if not request.user.is_staff:
+   
+    if request.user.is_staff == False:
         return HttpResponse('Access Denied')
-
-    # Filter rooms, reservations, and hotels by the logged-in user's staff ID
     staff_id = request.user.id
-    hotels = Hotels.objects.filter(staff__id=staff_id)
-    reserved_rooms = Reservation.objects.filter(room__hotel__in=hotels).count()
-    available_rooms = Rooms.objects.filter(hotel__in=hotels, status='1').count()
-    total_rooms = Rooms.objects.filter(hotel__in=hotels).count()
-    print(total_rooms)
+    print("The staff number is:",staff_id)
 
-        # Render the panel template with the hotel data for the logged-in user
-    return render(request, 'staff/panel.html', {'hotels': hotels, 'reserved_rooms': reserved_rooms, 'available_rooms': available_rooms, 'total_rooms': total_rooms})
+    hotel = Hotels.objects.filter(staff_id = staff_id)
+    hotelid = request.GET.get('hotel') 
+    #print(hotelid)
+    
+    print("the hotel name is :",hotel)
+    rooms = Rooms.objects.filter(hotel__in=hotel)
+    
+    #rooms = Rooms.objects.filter(hotel_id = hotel )
+    print("positive:",rooms)
+    # else:
+    #     rooms = Hotels.get_all_hotel()
+    #     print("neg:",rooms)
+    #rooms = Rooms.objects.all().filter(hotel=hotel)
+    print(rooms)
+    total_rooms = len(rooms)
+    available_rooms = len(Rooms.objects.all().filter(status='1'))
+    unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
+    reserved = len(Reservation.objects.filter(room__hotel__in=hotel))
+    #reserved = len(Reservation.objects.all())
+    if reserved:
+        # Process reservation form submission
+        
+        
+
+            # Update available_rooms count
+            available_rooms -= 1
 
 
-#     if request.user.is_staff == False:
-#         return HttpResponse('Access Denied')
-#     staff_id = request.user.id
-#     print("The staff number is:",staff_id)
-#
-#     hotel = Hotels.objects.filter(
-#     print("the hotel name is :",hotel)
-#     rooms = Rooms.objects.all()
-#     total_rooms = len(rooms)
-#     available_rooms = len(Rooms.objects.all().filter(status='1'))
-#     unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
-#     reserved = len(Reservation.objects.all())
-#
-#     hotel = Hotels.objects.values_list('location','id').distinct().order_by()
-#
-#     response = render(request,'staff/panel.html',{'location':hotel,'reserved':reserved,'rooms':rooms,'total_rooms':total_rooms,'available':available_rooms,'unavailable':unavailable_rooms})
-#     return HttpResponse(response)
+    #hotel = Hotels.objects.filter(staff__id=staff_id).values_list('location', 'id').distinct().order_by()
+
+
+
+    hotel = Hotels.objects.values_list('location','id').distinct().order_by()
+
+    response = render(request,'staff/panel.html',{'location':hotel,'reserved':reserved,'rooms':rooms,'total_rooms':total_rooms,'available':available_rooms,'unavailable':unavailable_rooms})
+    return HttpResponse(response)
 
 #for editing room information
 @login_required(login_url='/staff')
@@ -228,17 +239,29 @@ def edit_room(request):
         return HttpResponse(response)
 
 #for adding room
+from django.core.exceptions import ObjectDoesNotExist
 @login_required(login_url='/staff')
 def add_new_room(request):
+    
+
     if request.user.is_staff == False:
         return HttpResponse('Access Denied')
     if request.method == "POST":
         total_rooms = len(Rooms.objects.all())
         new_room = Rooms()
-        hotel = Hotels.objects.all().get(id = int(request.POST['hotel']))
+        staff_id = request.user.id
+
+        hotel = Hotels.objects.filter(staff_id=staff_id).values_list('location', 'id').distinct().order_by()
+
+        hotel_id = request.POST.get('hotel', None)
+        try:
+            hotel = Hotels.objects.get(id=hotel_id)
+        except ObjectDoesNotExist:
+            # handle the exception here, e.g. return an error response
+            return HttpResponse('Hotel does not exist')
+        
         print(f"id={hotel.id}")
         print(f"name={hotel.name}")
-
 
         new_room.roomnumber = total_rooms + 1
         new_room.room_type  = request.POST['roomtype']
@@ -247,6 +270,7 @@ def add_new_room(request):
         new_room.capacity   = int(request.POST['capacity'])
         new_room.hotel      = hotel
         new_room.status     = request.POST['status']
+        new_room.img = request.POST['img']
         new_room.price      = request.POST['price']
 
         new_room.save()
