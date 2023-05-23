@@ -38,7 +38,7 @@ class Rooms(models.Model):
 
     #type,no_of_rooms,capacity,prices,Hotel
     room_type = models.CharField(max_length=50,choices = ROOM_TYPE)
-    img = models.ImageField(default=None)
+    img = models.ImageField(upload_to='uploads/')
     capacity = models.IntegerField()
     price = models.IntegerField()
     size = models.IntegerField()
@@ -47,6 +47,12 @@ class Rooms(models.Model):
     roomnumber = models.IntegerField()
     def __str__(self):
         return self.hotel.name
+    @property
+    def get_img_url(self):
+        if self.img and hasattr(self.img, 'url'):
+            return self.img.url
+        else:
+            return "/static/images/hotel.jpg"
 
 class Reservation(models.Model):
 
@@ -58,5 +64,19 @@ class Reservation(models.Model):
     booking_id = models.CharField(max_length=100,default="null")
     def __str__(self):
         return self.guest.username
+
+
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback {self.id}"
+
 
 

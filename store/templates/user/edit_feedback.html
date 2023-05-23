@@ -1,0 +1,20 @@
+{% extends 'basic.html' %}
+{% block title %}Dashboard {% endblock title %} {% block body %}
+{% load app_tags %}
+<div class="con">
+
+<div class="main">
+
+<form method="post" action="{% url 'edit_feedback' feedback.id %}">
+  <div class="container">
+    {% csrf_token %}
+  
+    {{ form.as_p }}
+  </div>
+  
+  
+  <button type="submit" class="btn btn-primary">Update Feedback</button>
+</form>
+</div>
+</div>
+{% endblock body%}

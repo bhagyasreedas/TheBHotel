@@ -1,0 +1,33 @@
+
+{% extends 'basic.html' %}
+{% block title %}Dashboard {% endblock title %} {% block body %}
+{% load star_ratings %}
+{% load custom_filters %}
+<div class="con">
+
+{% for feedback_entry in feedback_entries %}
+    <div class="main">
+        <div class="container">
+        <h3>Reservation ID: {{ feedback_entry.reservation.id }}</h3>
+        <p>Feedback: {{ feedback_entry.comment }}</p>
+        <div class="star-rating">
+            {% for i in feedback_entry.rating|add_range %}
+                {% if i <= feedback_entry.rating %}
+                    <i class="fa fa-star"></i>
+                {% else %}
+                    <i class="fa fa-star-o"></i>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% if feedback_entry.user == request.user %}
+            <button class="btn"><a href="{% url 'edit_feedback' feedback_entry.id %}">Edit</a></button>
+            <button class="btn"><a href="{% url 'delete_feedback' feedback_entry.id %}">Delete</a></button>
+        {% endif %}
+        </div>
+    </div>
+    
+{% endfor %}
+</div>
+
+
+{% endblock body%}

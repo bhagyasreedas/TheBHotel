@@ -28,5 +28,8 @@ urlpatterns=[
     path('staff/panel/edit-room/edit', edit_room),
     path('staff/panel/view-room', view_room),
     
+    path('feedback/<int:reservation_id>/', add_feedback, name='add_feedback'),
 ]
+
     
+  

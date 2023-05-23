@@ -1,29 +1,48 @@
 {% extends 'basic.html' %} {% block title %}Dashboard {% endblock title %} {% block body %}
 {% load app_tags %}
-<h3 class="text-center  text-success">My Bookings </h3>
+{% load tz%}
+<div class="con">
+<div class="container">
+
+
 <table class="table">
     <thead>
         <th>User</th>
         <th>Room</th>
+        <th>Hotel Name</th>
         <th>Location</th>
         <th>Person</th>
         <th>Check in</th>
         <th>Check out</th>
         <th>Price</th>
+        <th>Feedback</th>
+        <th>View Feedback</th>
+
     </thead>
     {% for each_booking in bookings %}
     <tr>
         <td>{{each_booking.guest.username}}</td>
         <td>{{each_booking.room.roomnumber}}</td>
+        <td>{{each_booking.room.hotel.name}}</td>
         <td>{{each_booking.room.hotel.location}}</td>
         <td>{{each_booking.room.capacity}}</td>
         <td>{{each_booking.check_in}}</td>
         <td>{{each_booking.check_out}}</td>
         <td>{{each_booking.room.price}}</td>
+        
+        {% if reservation.check_out <= current_date %}
+        <td><a href="{% url 'cancel_reservation' each_booking.id %}" class="btn btn-danger">Cancel Reservation</a></td>
+       {% endif %}
+        <td><a class="nav-link" href="{% url 'add_feedback' each_booking.id%}"><button class="btn btn-group font-weight text-light" data-toggle="modal" data-target="#forlogin">Provide Feedback</button></a></td>
+        
+        <td><a class="nav-link" href="{% url 'view_feedback' reservation_id=each_booking.id %}"><button class="btn btn-group font-weight text-light" data-toggle="modal" data-target="#forlogin">View Feedback</button></a></td>
+        
     </tr>
     {% endfor %}
 
-
 </table>
+</div>
+    
+</div>
 
 {% endblock body %}

@@ -1,12 +1,14 @@
-from django.shortcuts import render ,redirect
+from django.shortcuts import render ,redirect,get_object_or_404
 from django.http import HttpResponse , HttpResponseRedirect
-from .models import Hotels,Rooms,Reservation
+from .models import Hotels,Rooms,Reservation,Feedback
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.db.models import Max, Min
+from .forms import FeedbackForm
+from django.utils import timezone
 # Create your views here.
 
 #homepage
@@ -43,6 +45,35 @@ def homepage(request):
         data = {'all_location':all_location}
         response = render(request,'index.html',data)
     return HttpResponse(response)
+
+#ALll rooms
+def rooms(request):
+    room = None
+    available_rooms = len(Rooms.objects.all().filter(status='1'))
+    print("the available rooms are:",available_rooms)
+    min_price = Rooms.objects.all().aggregate(Min('price'))
+    max_price = Rooms.objects.all().aggregate(Max('price'))
+    print(min_price)
+    print(max_price)
+
+    FilterPrice = request.GET.get('FilterPrice')
+    print("The filter price:",FilterPrice)
+    # #img = Rooms.objects.filter(img = 'img')
+    # img = request.GET.get('img')
+    # print("img url",img)
+    if available_rooms:
+        if FilterPrice:
+        
+            Int_FilterPrice = int(FilterPrice)
+            room = Rooms.objects.filter(price__lte = Int_FilterPrice)
+        
+    #     print("The rooms are:", room)
+        else:
+            room = Rooms.objects.all()
+        
+    print("the rooms are:",room)	
+    # rooms = Rooms.objects.all()
+    return render(request, 'user/room_list.html', {'room': room,'min_price': min_price, 'max_price': max_price,'FilterPrice':FilterPrice,})
 
 #about
 def aboutpage(request):
@@ -175,8 +206,7 @@ def panel(request):
     print("The staff number is:",staff_id)
 
     hotel = Hotels.objects.filter(staff_id = staff_id)
-    hotelid = request.GET.get('hotel') 
-    #print(hotelid)
+    
     
     print("the hotel name is :",hotel)
     rooms = Rooms.objects.filter(hotel__in=hotel)
@@ -189,7 +219,9 @@ def panel(request):
     #rooms = Rooms.objects.all().filter(hotel=hotel)
     print(rooms)
     total_rooms = len(rooms)
+    print("the total room fr 1 hotel:",total_rooms)
     available_rooms = len(Rooms.objects.all().filter(status='1'))
+    print("The actual availibility before reservation:",available_rooms)
     unavailable_rooms = len(Rooms.objects.all().filter(status='2'))
     reserved = len(Reservation.objects.filter(room__hotel__in=hotel))
     #reserved = len(Reservation.objects.all())
@@ -200,6 +232,7 @@ def panel(request):
 
             # Update available_rooms count
             available_rooms -= 1
+    print("The available rooms are:",available_rooms)
 
 
     #hotel = Hotels.objects.filter(staff__id=staff_id).values_list('location', 'id').distinct().order_by()
@@ -242,41 +275,78 @@ def edit_room(request):
 from django.core.exceptions import ObjectDoesNotExist
 @login_required(login_url='/staff')
 def add_new_room(request):
-    
-
     if request.user.is_staff == False:
         return HttpResponse('Access Denied')
     if request.method == "POST":
-        total_rooms = len(Rooms.objects.all())
-        new_room = Rooms()
         staff_id = request.user.id
-
-        hotel = Hotels.objects.filter(staff_id=staff_id).values_list('location', 'id').distinct().order_by()
-
         hotel_id = request.POST.get('hotel', None)
         try:
-            hotel = Hotels.objects.get(id=hotel_id)
+            hotel = Hotels.objects.get(id=hotel_id, staff_id=staff_id)
         except ObjectDoesNotExist:
-            # handle the exception here, e.g. return an error response
             return HttpResponse('Hotel does not exist')
         
-        print(f"id={hotel.id}")
-        print(f"name={hotel.name}")
+        room_type = request.POST['roomtype']
+        capacity = int(request.POST['capacity'])
+        size = int(request.POST['size'])
+        status = request.POST['status']
+        #img = request.POST['img']
+        img = request.FILES.get('img')
+        price = request.POST['price']
 
-        new_room.roomnumber = total_rooms + 1
-        new_room.room_type  = request.POST['roomtype']
-        new_room.capacity   = int(request.POST['capacity'])
-        new_room.size       = int(request.POST['size'])
-        new_room.capacity   = int(request.POST['capacity'])
-        new_room.hotel      = hotel
-        new_room.status     = request.POST['status']
-        new_room.img = request.POST['img']
-        new_room.price      = request.POST['price']
+        print("###########", img)
+        
+       
+        max_room_number = Rooms.objects.filter(hotel=hotel).aggregate(Max('roomnumber'))['roomnumber__max']
+        room_number = max_room_number + 1 if max_room_number else 1
 
+        new_room = Rooms(roomnumber=room_number, room_type=room_type, capacity=capacity, size=size,
+                         hotel=hotel, status=status, img=img, price=price)
         new_room.save()
-        messages.success(request,"New Room Added Successfully")
-    
+
+        messages.success(request, "New Room Added Successfully")
+
     return redirect('staffpanel')
+
+
+# def add_new_room(request):
+    
+
+#     if request.user.is_staff == False:
+#         return HttpResponse('Access Denied')
+#     if request.method == "POST":
+#         total_rooms = len(Rooms.objects.all())
+#         new_room = Rooms()
+#         staff_id = request.user.id
+        
+
+#         hotel = Hotels.objects.filter(staff_id=staff_id).values_list('location', 'id').distinct().order_by()
+#         print(hotel)
+
+#         hotel_id = request.POST.get('hotel', None)
+#         try:
+#             hotel = Hotels.objects.get(id=hotel_id)
+#         except ObjectDoesNotExist:
+#             # handle the exception here, e.g. return an error response
+#             return HttpResponse('Hotel does not exist')
+        
+#         print(f"id={hotel.id}")
+#         print(f"name={hotel.name}")
+
+        
+#         new_room = Rooms()
+#         new_room.room_type  = request.POST['roomtype']
+#         new_room.capacity   = int(request.POST['capacity'])
+#         new_room.size       = int(request.POST['size'])
+#         new_room.capacity   = int(request.POST['capacity'])
+#         new_room.hotel      = hotel
+#         new_room.status     = request.POST['status']
+#         new_room.img = request.POST['img']
+#         new_room.price      = request.POST['price']
+
+#         new_room.save()
+#         messages.success(request,"New Room Added Successfully")
+    
+#     return redirect('staffpanel')
 
 #booking room page
 @login_required(login_url='/user')
@@ -327,6 +397,23 @@ def book_room(request):
     else:
         return HttpResponse('Access Denied')
 
+
+def cancel_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    current_date = timezone.now().date()
+    
+    if request.method == 'POST':
+        if reservation.check_out <= current_date:
+            messages.success(request,'Cannot cancel a reservation that has already been checked out.')
+        else:
+       
+            reservation.delete()
+            messages.success(request, 'Reservation canceled successfully.')
+        return redirect('room_list')  # Redirect to reservation list page or desired destination
+    
+    return render(request, 'user/cancel_reservation.html', {'reservation': reservation,'current_date':current_date})
+
+
 def handler404(request):
     return render(request, '404.html', status=404)
 
@@ -345,8 +432,8 @@ def user_bookings(request):
     user = User.objects.all().get(id=request.user.id)
     print(f"request user id ={request.user.id}")
     bookings = Reservation.objects.all().filter(guest=user)
-    if not bookings:
-        messages.warning(request,"No Bookings Found")
+    # if not bookings:
+    #     messages.warning(request,"No Bookings Found")
     return HttpResponse(render(request,'user/mybookings.html',{'bookings':bookings}))
 
 @login_required(login_url='/staff')
@@ -427,11 +514,80 @@ def store(request):
 #for showing all bookings to staff
 @login_required(login_url='/staff')
 def all_bookings(request):
+    staff_id = request.user.id
+    hotel = Hotels.objects.filter(staff_id = staff_id)
+
    
-    bookings = Reservation.objects.all()
-    if not bookings:
-        messages.warning(request,"No Bookings Found")
+    #bookings = Reservation.objects.all()
+    bookings = Reservation.objects.filter(room__hotel__in=hotel)
+    # if not bookings:
+    #     messages.warning(request,"No Bookings Found")
     return HttpResponse(render(request,'staff/allbookings.html',{'bookings':bookings}))
+
+@login_required(login_url='/user')
+def add_feedback(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.reservation = reservation
+            feedback.user = request.user
+            feedback.save()
+            #messages.success(request,"Thank you for your FeedBAck")
+            return redirect('view_feedback',reservation_id=reservation_id)
+ 
+
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'user/add_feedback.html', {'form': form, 'reservation': reservation})
+
+
+@login_required(login_url='/user')
+def view_feedback(request,reservation_id):
+
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    room = reservation.room
+    hotel = room.hotel
+    feedback_entries = Feedback.objects.filter(reservation=reservation)
+    return render(request, 'user/feedback_list.html', {'hotel': hotel, 'feedback_entries': feedback_entries})
+
+@login_required(login_url='/user')
+def delete_feedback(request, feedback_id):
+    try:
+        feedback = Feedback.objects.get(id=feedback_id)
+        reservation_id = feedback.reservation_id
+        feedback.delete()
+        return redirect('view_feedback', reservation_id=reservation_id)
+    except Feedback.DoesNotExist:
+        return HttpResponse('Feedback does not exist')
+
+
+        
+@login_required(login_url='/user')
+def edit_feedback(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    reservation_id = feedback.reservation_id
+
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST, instance=feedback)
+        if form.is_valid():
+            form.save()
+            
+            return redirect('view_feedback',reservation_id = reservation_id)
+    else:
+        form = FeedbackForm(instance=feedback)
+
+    return render(request, 'user/edit_feedback.html', {'form': form, 'feedback': feedback})
+
+
+
+
+
+
     
 
 

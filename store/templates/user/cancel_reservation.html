@@ -1,0 +1,15 @@
+
+{% extends 'basic.html' %}
+{% block title %}Dashboard {% endblock title %} {% block body %}
+
+<div class="con">
+<h3>Cancel Reservation</h3>
+<p>Are you sure you want to cancel this reservation?</p>
+
+<form method="POST" action="{% url 'cancel_reservation' reservation.id %}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Cancel Reservation</button>
+</form>
+
+</div>
+{%  endblock body%}

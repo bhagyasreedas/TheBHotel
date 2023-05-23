@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     
     'store',
+    
     'store.reservations_functions',
 ]
 
@@ -127,14 +128,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # STATICFILES_DIR = [
 #     BASE_DIR / "static",
 # ]
-STATICFILES_DIR = [
-    BASE_DIR / "static",
-]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+STATICFILES_DIR = [
+    BASE_DIR / 'static',
+]
